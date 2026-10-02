@@ -284,6 +284,9 @@ html.js .hero__lead,html.js .hero__sub,html.js .glass,html.js .scroll-hint{opaci
    Responsive
    ========================================================================== */
 
+/* keep content clear of the side pager on desktop */
+@media (min-width:1101px){.exp .panel__inner,.res .panel__inner,.arch .panel__inner,.book .panel__inner{padding-right:calc(var(--pad-x) + 64px)}}
+
 /* tablet */
 @media (max-width:1100px){
   .nav{display:none}
