@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CHIMYON — резиденция в горах Узбекистана</title>
+<meta name="description" content="CHIMYON — уединённая резиденция в горах Чимган с видом на Чарвакское водохранилище. Тёмный камень, панорамное стекло, тёплые интерьеры и полная тишина.">
+<meta property="og:title" content="CHIMYON — жить на краю тишины">
+<meta property="og:description" content="Уединённая резиденция в горах Чимган, Узбекистан.">
+<meta name="theme-color" content="#0b0b0a">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%230b0b0a'/><path d='M10 48 L26 22 L34 34 L40 26 L54 48 Z' fill='none' stroke='%23d8b98a' stroke-width='3'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0b0a;
+  --bg-2:#121210;
+  --fg:#efebe4;
+  --muted:#9a948a;
+  --line:rgba(239,235,228,.16);
+  --gold:#d8b98a;
+  --glass:rgba(255,255,255,.08);
+  --pad:clamp(16px,4vw,56px);
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg)}
+body{background:var(--bg);color:var(--fg);font-family:"Inter Tight",system-ui,sans-serif;font-weight:300;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+::selection{background:var(--gold);color:#111}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+
+/* ---------- preloader ---------- */
+.loader{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;flex-direction:column;justify-content:space-between;padding:var(--pad)}
+.loader__top{display:flex;justify-content:space-between;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.loader__word{font-size:clamp(56px,14vw,220px);font-weight:200;letter-spacing:-.04em;line-height:.9;display:flex;overflow:hidden}
+.loader__word span{display:inline-block;transform:translateY(105%)}
+.loader__count{font-size:clamp(40px,7vw,96px);font-weight:200;text-align:right;font-variant-numeric:tabular-nums}
+.loader__bar{position:absolute;left:0;bottom:0;height:1px;background:var(--gold);width:0}
+
+/* ---------- cursor ---------- */
+.cursor{position:fixed;top:0;left:0;width:10px;height:10px;border-radius:50%;background:var(--fg);mix-blend-mode:difference;pointer-events:none;z-index:90;transform:translate(-50%,-50%);transition:width .35s var(--ease),height .35s var(--ease)}
+.cursor.is-big{width:72px;height:72px}
+@media (hover:none){.cursor{display:none}}
+
+/* ---------- header ---------- */
+.header{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:22px var(--pad);transition:transform .6s var(--ease),background .4s}
+.header.is-hidden{transform:translateY(-110%)}
+.header.is-solid{background:linear-gradient(to bottom,rgba(11,11,10,.85),rgba(11,11,10,0))}
+.logo{font-weight:400;letter-spacing:.32em;font-size:14px}
+.nav{display:flex;gap:clamp(18px,3vw,44px);font-size:13px;position:relative;padding-bottom:10px}
+.nav::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--line)}
+.nav a{position:relative;opacity:.85}
+.nav a::after{content:"";position:absolute;left:0;bottom:-10px;height:1px;width:100%;background:var(--fg);transform:scaleX(0);transform-origin:right;transition:transform .5s var(--ease)}
+.nav a:hover::after{transform:scaleX(1);transform-origin:left}
+.burger{display:none;width:28px;height:14px;position:relative}
+.burger i{position:absolute;left:0;right:0;height:1px;background:var(--fg);transition:transform .4s var(--ease)}
+.burger i:first-child{top:0}.burger i:last-child{bottom:0}
+.menu{position:fixed;inset:0;z-index:45;background:var(--bg);display:flex;flex-direction:column;justify-content:center;gap:12px;padding:var(--pad);clip-path:inset(0 0 100% 0);transition:clip-path .8s var(--ease)}
+.menu a{font-size:44px;font-weight:200;letter-spacing:-.02em}
+.menu.is-open{clip-path:inset(0 0 0 0)}
+body.menu-open .burger i:first-child{transform:translateY(6.5px) rotate(45deg)}
+body.menu-open .burger i:last-child{transform:translateY(-6.5px) rotate(-45deg)}
+@media (max-width:760px){.nav{display:none}.burger{display:block}}
+
+/* ---------- hero ---------- */
+.hero{position:relative;height:200vh}
+.hero__sticky{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.hero__gl,.hero__fallback{position:absolute;inset:0;width:100%;height:100%}
+.hero__fallback{object-fit:cover;filter:grayscale(.55) contrast(1.08) brightness(.62) sepia(.18)}
+.hero__gl{opacity:0;transition:opacity 1s}
+.hero.gl-ready .hero__gl{opacity:1}
+.hero.gl-ready .hero__fallback{opacity:0}
+.hero__shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(11,11,10,.85) 0%,rgba(11,11,10,0) 45%),linear-gradient(to bottom,rgba(11,11,10,.55),rgba(11,11,10,0) 25%);pointer-events:none}
+.hero__lead{position:absolute;top:clamp(96px,16vh,150px);right:var(--pad);max-width:300px;font-size:14px;text-align:justify;color:rgba(239,235,228,.85)}
+.hero__title{position:absolute;left:var(--pad);bottom:clamp(90px,14vh,140px);font-size:clamp(46px,8.4vw,140px);font-weight:200;line-height:.92;letter-spacing:-.035em;text-transform:uppercase}
+.line{display:block;overflow:hidden}
+.line > span{display:inline-block;transform:translateY(110%)}
+.hero__sub{position:absolute;left:var(--pad);bottom:clamp(36px,6vh,64px);font-size:13px;color:var(--muted);max-width:320px}
+.glass{position:absolute;right:var(--pad);bottom:clamp(36px,6vh,64px);width:min(280px,42vw);padding:18px 20px;border-radius:14px;background:var(--glass);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2);opacity:0;transform:translateY(20px)}
+.glass b{display:block;font-size:34px;font-weight:300;letter-spacing:-.02em}
+.glass p{font-size:13px;color:rgba(239,235,228,.85)}
+.glass__dot{position:absolute;top:-58px;right:52%;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.35);backdrop-filter:blur(6px);display:grid;place-items:center}
+.glass__dot::before{content:"";width:6px;height:6px;border-radius:50%;background:#fff}
+.glass__dot::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:1px solid rgba(255,255,255,.4);animation:pulse 2.2s infinite}
+@keyframes pulse{from{transform:scale(.6);opacity:1}to{transform:scale(1.6);opacity:0}}
+.scroll-hint{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:10px}
+.scroll-hint i{width:1px;height:42px;background:linear-gradient(var(--fg),transparent);animation:drip 2s infinite var(--ease)}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@media (max-width:760px){
+  .hero__lead{left:var(--pad);right:var(--pad);max-width:none;text-align:left}
+  .glass{display:none}
+  .hero__sub{max-width:none;right:var(--pad)}
+  .scroll-hint{display:none}
+}
+
+/* ---------- experience ---------- */
+.exp{position:relative;padding:clamp(100px,14vw,180px) var(--pad) clamp(80px,10vw,140px)}
+.eyebrow{font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
+.exp__title{text-align:center;font-size:clamp(40px,6.4vw,104px);font-weight:200;letter-spacing:-.035em;line-height:1;margin:18px 0 clamp(56px,8vw,110px)}
+.exp__head{text-align:center}
+.exp__grid{display:grid;grid-template-columns:repeat(12,1fr);gap:clamp(10px,1.4vw,20px);align-items:start}
+.ph{position:relative;overflow:hidden;background:var(--bg-2)}
+.ph img{width:100%;height:100%;object-fit:cover;filter:grayscale(.45) contrast(1.06) brightness(.82) sepia(.2);transform:scale(1.15);will-change:transform}
+.ph::after{content:"";position:absolute;inset:0;background:var(--bg);transform-origin:top;transition:none}
+.ph.is-in::after{transform:scaleY(0);transition:transform 1.3s var(--ease)}
+.stat b{display:block;font-size:clamp(34px,4vw,64px);font-weight:300;letter-spacing:-.03em;line-height:1}
+.stat span{font-size:13px;color:var(--muted)}
+.g1{grid-column:1/3;aspect-ratio:3/4}
+.g2{grid-column:3/6;aspect-ratio:1/1}
+.g3{grid-column:6/7;align-self:end}
+.g4{grid-column:9/11;grid-row:1/3;aspect-ratio:3/4;margin-top:-40px}
+.g5{grid-column:11/13;align-self:end;grid-row:1}
+.g6{grid-column:1/3;aspect-ratio:4/5}
+.g7{grid-column:3/6;align-self:end;font-size:14px;color:rgba(239,235,228,.75);max-width:280px}
+.g8{grid-column:6/9;align-self:center;text-align:center}
+.g9{grid-column:9/11;aspect-ratio:3/4}
+.g10{grid-column:11/13;align-self:end;justify-self:end}
+.btn-link{display:inline-flex;align-items:center;gap:12px;font-size:15px;font-weight:400;letter-spacing:.08em;text-transform:uppercase;padding:10px 0;border-bottom:1px solid var(--line);transition:gap .5s var(--ease),border-color .4s}
+.btn-link:hover{gap:22px;border-color:var(--gold)}
+@media (max-width:900px){
+  .exp__grid{grid-template-columns:repeat(6,1fr)}
+  .g1{grid-column:1/3}.g2{grid-column:3/7}.g3{grid-column:1/4;grid-row:auto}
+  .g4{grid-column:4/7;grid-row:auto;margin-top:0}.g5{grid-column:1/4;grid-row:auto}
+  .g6{grid-column:1/4}.g7{grid-column:4/7;max-width:none}.g8{grid-column:1/7;padding:20px 0}
+  .g9{grid-column:1/4}.g10{grid-column:4/7}
+}
+
+/* ---------- marquee ---------- */
+.marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;padding:26px 0;white-space:nowrap}
+.marquee__track{display:inline-flex;gap:56px;font-size:clamp(28px,4vw,56px);font-weight:200;letter-spacing:-.02em;animation:marq 38s linear infinite}
+.marquee__track span{display:inline-flex;align-items:center;gap:56px}
+.marquee__track span::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--gold)}
+@keyframes marq{to{transform:translateX(-50%)}}
+
+/* ---------- residences ---------- */
+.res{padding:clamp(90px,12vw,160px) var(--pad)}
+.res__head{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:clamp(40px,6vw,80px);flex-wrap:wrap}
+.h2{font-size:clamp(36px,5.2vw,84px);font-weight:200;letter-spacing:-.035em;line-height:1}
+.res__head p{max-width:380px;font-size:15px;color:rgba(239,235,228,.75)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,1.6vw,24px)}
+.card{position:relative;border-top:1px solid var(--line);padding-top:18px}
+.card .ph{aspect-ratio:4/5;margin-bottom:20px}
+.card .ph img{transition:transform 1.4s var(--ease),filter .8s}
+.card:hover .ph img{transform:scale(1.04)!important;filter:grayscale(0) contrast(1.05) brightness(.9) sepia(.1)}
+.card__top{display:flex;justify-content:space-between;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.card h3{font-size:28px;font-weight:300;letter-spacing:-.02em;margin-bottom:8px}
+.card p{font-size:14px;color:rgba(239,235,228,.7);max-width:340px}
+.card__meta{display:flex;gap:18px;margin-top:16px;font-size:13px}
+.card__meta span{padding:6px 12px;border:1px solid var(--line);border-radius:100px}
+@media (max-width:900px){.cards{grid-template-columns:1fr}}
+
+/* ---------- arrival ---------- */
+.arrival{position:relative;height:260vh}
+.arrival__sticky{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:grid;place-items:center}
+.arrival__media{position:absolute;inset:0;clip-path:inset(18% 22% 18% 22% round 18px);will-change:clip-path}
+.arrival__media img{width:100%;height:100%;object-fit:cover;filter:grayscale(.35) contrast(1.1) brightness(.7) sepia(.22);transform:scale(1.25)}
+.arrival__media::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(11,11,10,.75),transparent 55%)}
+.arrival__title{position:absolute;left:var(--pad);bottom:clamp(80px,14vh,140px);z-index:2;font-size:clamp(46px,7.6vw,128px);font-weight:200;line-height:.92;letter-spacing:-.035em;text-transform:uppercase}
+.arrival__note{position:absolute;left:var(--pad);bottom:clamp(36px,6vh,64px);z-index:2;font-size:13px;color:rgba(239,235,228,.75);max-width:300px}
+.arrival__aside{position:absolute;right:var(--pad);top:50%;transform:translateY(-50%);z-index:2;max-width:260px;font-size:13px;color:rgba(239,235,228,.85);display:grid;gap:22px}
+.arrival__aside div{border-left:1px solid var(--line);padding-left:16px}
+.arrival__aside b{display:block;font-weight:400;color:var(--fg);margin-bottom:4px}
+.arrival__cta{position:absolute;right:var(--pad);bottom:clamp(36px,6vh,64px);z-index:2}
+.arrival__fade{opacity:0}
+@media (max-width:760px){.arrival__aside{display:none}.arrival__cta{left:var(--pad);right:auto;bottom:16px}.arrival__note{bottom:76px}.arrival__title{bottom:130px}}
+
+/* ---------- details ---------- */
+.details{padding:clamp(90px,12vw,160px) var(--pad);display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,6vw,100px)}
+.details__list{list-style:none;border-top:1px solid var(--line)}
+.details__list li{display:grid;grid-template-columns:60px 1fr auto;gap:20px;padding:26px 0;border-bottom:1px solid var(--line);align-items:baseline;transition:padding .5s var(--ease)}
+.details__list li:hover{padding-left:14px}
+.details__list em{font-style:normal;font-size:12px;color:var(--muted)}
+.details__list strong{font-weight:300;font-size:clamp(20px,2vw,28px);letter-spacing:-.01em}
+.details__list span{font-size:13px;color:var(--muted)}
+.details__left p{margin-top:28px;font-size:15px;color:rgba(239,235,228,.75);max-width:420px}
+.details__left .ph{margin-top:40px;aspect-ratio:16/10}
+@media (max-width:900px){.details{grid-template-columns:1fr}}
+
+/* ---------- booking ---------- */
+.book{position:relative;padding:clamp(100px,14vw,180px) var(--pad);overflow:hidden;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
+.book__bg{position:absolute;inset:0;z-index:0}
+.book__bg img{width:100%;height:120%;object-fit:cover;filter:grayscale(.3) brightness(.45) contrast(1.1) sepia(.2)}
+.book__bg::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,var(--bg),rgba(11,11,10,.3) 30%,rgba(11,11,10,.6) 70%,var(--bg))}
+.book__inner{position:relative;z-index:1;display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(30px,6vw,90px);align-items:end}
+.book .h2{font-size:clamp(44px,7vw,120px);text-transform:uppercase}
+.form{background:rgba(18,18,16,.55);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:clamp(20px,2.4vw,32px);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:grid;gap:14px}
+.form__row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{display:grid;gap:6px}
+.field label{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.field input,.field select{width:100%;background:transparent;border:0;border-bottom:1px solid var(--line);padding:10px 0;color:var(--fg);font:inherit;font-size:16px;outline:none;color-scheme:dark;transition:border-color .3s}
+.field input:focus,.field select:focus{border-color:var(--gold)}
+.field select option{background:#151513}
+.submit{margin-top:10px;height:56px;border-radius:100px;background:var(--fg);color:#111;font-weight:500;letter-spacing:.1em;text-transform:uppercase;font-size:13px;position:relative;overflow:hidden;transition:color .5s}
+.submit::before{content:"";position:absolute;inset:0;background:var(--gold);transform:translateY(101%);transition:transform .6s var(--ease)}
+.submit:hover::before{transform:translateY(0)}
+.submit span{position:relative}
+.form__ok{display:none;text-align:center;padding:30px 0}
+.form__ok b{display:block;font-size:28px;font-weight:300;margin-bottom:8px}
+.form.is-sent .form__fields{display:none}
+.form.is-sent .form__ok{display:block}
+@media (max-width:900px){.book__inner{grid-template-columns:1fr}.form__row{grid-template-columns:1fr}}
+
+/* ---------- footer ---------- */
+.footer{padding:60px var(--pad) 28px;border-top:1px solid var(--line)}
+.footer__big{font-size:clamp(70px,21vw,360px);font-weight:200;letter-spacing:-.06em;line-height:.8;margin-bottom:40px;background:linear-gradient(to bottom,var(--fg),rgba(239,235,228,.08));-webkit-background-clip:text;background-clip:text;color:transparent}
+.footer__cols{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;font-size:14px}
+.footer__cols h4{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:400;margin-bottom:12px}
+.footer__cols a{display:block;opacity:.85;margin-bottom:6px}
+.footer__cols a:hover{color:var(--gold)}
+.footer__bottom{display:flex;justify-content:space-between;margin-top:50px;font-size:12px;color:var(--muted);gap:20px;flex-wrap:wrap}
+@media (max-width:760px){.footer__cols{grid-template-columns:1fr 1fr}}
+
+/* reveal helpers */
+.rv{opacity:0;transform:translateY(30px)}
+.no-js .rv,.no-js .line>span,.no-js .glass{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body class="no-js">
+
+<div class="loader" id="loader">
+  <div class="loader__top"><span>Чимган · Узбекистан</span><span>41°33′ с.ш. 70°01′ в.д.</span></div>
+  <div class="loader__word" aria-label="CHIMYON"><span>C</span><span>H</span><span>I</span><span>M</span><span>Y</span><span>O</span><span>N</span></div>
+  <div class="loader__count"><span id="count">0</span>%</div>
+  <div class="loader__bar" id="bar"></div>
+</div>
+
+<div class="cursor" id="cursor"></div>
+
+<header class="header" id="header">
+  <a href="#top" class="logo" data-cursor>CHIMYON</a>
+  <nav class="nav">
+    <a href="#residence" data-cursor>Резиденция</a>
+    <a href="#experience" data-cursor>Опыт</a>
+    <a href="#architecture" data-cursor>Архитектура</a>
+    <a href="#contact" data-cursor>Контакты</a>
+  </nav>
+  <button class="burger" id="burger" aria-label="Меню"><i></i><i></i></button>
+</header>
+<div class="menu" id="menu">
+  <a href="#residence">Резиденция</a>
+  <a href="#experience">Опыт</a>
+  <a href="#architecture">Архитектура</a>
+  <a href="#contact">Контакты</a>
+</div>
+
+<main id="top">
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero__sticky">
+      <img class="hero__fallback" src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=2000&q=80&auto=format&fit=crop" alt="Резиденция на берегу горного озера">
+      <canvas class="hero__gl" id="gl"></canvas>
+      <div class="hero__shade"></div>
+
+      <p class="hero__lead rv">Уединённая резиденция, вписанная в ландшафт Западного Тянь-Шаня. Тёмный камень, панорамное стекло, тёплые интерьеры и непрерывный вид на Чимган и Чарвак.</p>
+
+      <h1 class="hero__title">
+        <span class="line"><span>Жить на краю</span></span>
+        <span class="line"><span>тишины</span></span>
+      </h1>
+      <p class="hero__sub rv">Частная горная резиденция в 80 км от Ташкента. Архитектура, природа и покой.</p>
+
+      <div class="glass" id="glass">
+        <span class="glass__dot"></span>
+        <b>360°</b>
+        <p>Горы и водохранилище вокруг: ощущение полной приватности и единения с природой.</p>
+      </div>
+
+      <div class="scroll-hint">Листайте<i></i></div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section class="exp" id="experience">
+    <div class="exp__head">
+      <span class="eyebrow rv">01 — Опыт</span>
+      <h2 class="exp__title" data-scramble>Опыт CHIMYON</h2>
+    </div>
+    <div class="exp__grid">
+      <div class="ph g1" data-speed="-6"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&q=75&auto=format&fit=crop" alt="Горы над облаками" loading="lazy"></div>
+      <div class="ph g2" data-speed="4"><img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=1200&q=75&auto=format&fit=crop" alt="Спальня с видом" loading="lazy"></div>
+      <div class="stat g3 rv"><b><span data-count="10">0</span>+</b><span>лет на рынке</span></div>
+      <div class="ph g4" data-speed="-8"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1000&q=75&auto=format&fit=crop" alt="Вилла с панорамным остеклением" loading="lazy"></div>
+      <div class="stat g5 rv"><b><span data-count="18">0</span></b><span>сьютов с видом на Чарвак</span></div>
+      <div class="ph g6" data-speed="6"><img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=900&q=75&auto=format&fit=crop" alt="Ночное небо над горами" loading="lazy"></div>
+      <p class="g7 rv">Каждая деталь создана для неспешных утр, тихих вечеров и ощущения полного побега от города.</p>
+      <div class="stat g8 rv"><b><span data-count="50">0</span>+</b><span>человек в команде</span></div>
+      <div class="ph g9" data-speed="-4"><img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=900&q=75&auto=format&fit=crop" alt="Лаунж-зона" loading="lazy"></div>
+      <a href="#contact" class="btn-link g10 rv" data-cursor>Забронировать <span>→</span></a>
+    </div>
+  </section>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <span>Чимган</span><span>Чарвак</span><span>Бельдерсай</span><span>Пскем</span><span>Угам</span><span>Тянь-Шань</span>
+      <span>Чимган</span><span>Чарвак</span><span>Бельдерсай</span><span>Пскем</span><span>Угам</span><span>Тянь-Шань</span>
+    </div>
+  </div>
+
+  <!-- RESIDENCES -->
+  <section class="res" id="residence">
+    <div class="res__head">
+      <div>
+        <span class="eyebrow rv">02 — Резиденция</span>
+        <h2 class="h2" style="margin-top:16px"><span class="line"><span>Три типа</span></span><span class="line"><span>уединения</span></span></h2>
+      </div>
+      <p class="rv">Сьюты, виллы и шале расположены на склоне так, чтобы ни одно окно не смотрело в соседнее. Только вы, горы и вода.</p>
+    </div>
+    <div class="cards">
+      <article class="card rv" data-cursor-big>
+        <div class="card__top"><span>Сьют</span><span>от 45 м²</span></div>
+        <div class="ph"><img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900&q=75&auto=format&fit=crop" alt="Сьют" loading="lazy"></div>
+        <h3>Сьют «Чарвак»</h3>
+        <p>Панорамное окно от пола до потолка, камин и терраса над водой.</p>
+        <div class="card__meta"><span>2 гостя</span><span>Терраса</span></div>
+      </article>
+      <article class="card rv" data-cursor-big>
+        <div class="card__top"><span>Вилла</span><span>от 140 м²</span></div>
+        <div class="ph"><img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=900&q=75&auto=format&fit=crop" alt="Вилла" loading="lazy"></div>
+        <h3>Вилла «Бельдерсай»</h3>
+        <p>Две спальни, частный бассейн с подогревом и вид на снежные вершины.</p>
+        <div class="card__meta"><span>4 гостя</span><span>Бассейн</span></div>
+      </article>
+      <article class="card rv" data-cursor-big>
+        <div class="card__top"><span>Шале</span><span>от 220 м²</span></div>
+        <div class="ph"><img src="https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=900&q=75&auto=format&fit=crop" alt="Шале" loading="lazy"></div>
+        <h3>Шале «Большой Чимган»</h3>
+        <p>Отдельно стоящий дом у кромки леса с сауной, кухней и личным консьержем.</p>
+        <div class="card__meta"><span>6 гостей</span><span>Сауна</span></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ARRIVAL -->
+  <section class="arrival" id="arrival">
+    <div class="arrival__sticky">
+      <div class="arrival__media" id="arrivalMedia">
+        <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=2000&q=80&auto=format&fit=crop" alt="Въездная зона резиденции" loading="lazy">
+      </div>
+      <h2 class="arrival__title arrival__fade"><span class="line"><span>Прибытие</span></span><span class="line"><span>в CHIMYON</span></span></h2>
+      <p class="arrival__note arrival__fade">Трансфер из Ташкента за 90 минут: встреча в аэропорту, дорога через Газалкент и серпантин к самым горам.</p>
+      <div class="arrival__aside arrival__fade">
+        <div><b>Трансфер</b>Встретим в аэропорту Ташкента на автомобиле бизнес-класса.</div>
+        <div><b>Вертолёт</b>Посадочная площадка в 300 м от главного здания.</div>
+        <div><b>Консьерж</b>Ваш персональный помощник 24/7 с момента бронирования.</div>
+      </div>
+      <a href="#contact" class="btn-link arrival__cta arrival__fade" data-cursor>Забронировать пребывание <span>→</span></a>
+    </div>
+  </section>
+
+  <!-- ARCHITECTURE -->
+  <section class="details" id="architecture">
+    <div class="details__left">
+      <span class="eyebrow rv">03 — Архитектура</span>
+      <h2 class="h2" style="margin-top:16px"><span class="line"><span>Камень, стекло</span></span><span class="line"><span>и тишина</span></span></h2>
+      <p class="rv">Здания из местного тёмного камня и кедра повторяют линию склона. Мы сохранили каждое дерево на участке и спрятали всю инфраструктуру под землю.</p>
+      <div class="ph" data-speed="-5"><img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1400&q=75&auto=format&fit=crop" alt="Интерьер" loading="lazy"></div>
+    </div>
+    <ul class="details__list">
+      <li class="rv"><em>01</em><strong>Высота 1 600 м</strong><span>Чистый горный воздух</span></li>
+      <li class="rv"><em>02</em><strong>Панорамное остекление</strong><span>Вид на 360°</span></li>
+      <li class="rv"><em>03</em><strong>Спа и хаммам</strong><span>Восточные ритуалы</span></li>
+      <li class="rv"><em>04</em><strong>Ресторан «Тандыр»</strong><span>Узбекская кухня от шефа</span></li>
+      <li class="rv"><em>05</em><strong>Горные маршруты</strong><span>С гидом и без</span></li>
+      <li class="rv"><em>06</em><strong>Лыжи зимой</strong><span>5 минут до подъёмника</span></li>
+      <li class="rv"><em>07</em><strong>Зимний бассейн</strong><span>Вода +32°</span></li>
+    </ul>
+  </section>
+
+  <!-- BOOKING -->
+  <section class="book" id="contact">
+    <div class="book__bg"><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=2000&q=75&auto=format&fit=crop" alt="" loading="lazy" id="bookImg"></div>
+    <div class="book__inner">
+      <div>
+        <span class="eyebrow rv">04 — Бронирование</span>
+        <h2 class="h2" style="margin-top:16px"><span class="line"><span>Ваша тишина</span></span><span class="line"><span>ждёт</span></span></h2>
+      </div>
+      <form class="form rv" id="form">
+        <div class="form__fields" style="display:grid;gap:14px">
+          <div class="form__row">
+            <div class="field"><label for="in">Заезд</label><input id="in" type="date" required></div>
+            <div class="field"><label for="out">Выезд</label><input id="out" type="date" required></div>
+          </div>
+          <div class="form__row">
+            <div class="field"><label for="type">Размещение</label>
+              <select id="type"><option>Сьют «Чарвак»</option><option>Вилла «Бельдерсай»</option><option>Шале «Большой Чимган»</option></select></div>
+            <div class="field"><label for="guests">Гости</label>
+              <select id="guests"><option>1 гость</option><option selected>2 гостя</option><option>3 гостя</option><option>4 гостя</option><option>5–6 гостей</option></select></div>
+          </div>
+          <div class="form__row">
+            <div class="field"><label for="name">Имя</label><input id="name" type="text" placeholder="Ваше имя" required></div>
+            <div class="field"><label for="phone">Телефон</label><input id="phone" type="tel" placeholder="+998 __ ___ __ __" required></div>
+          </div>
+          <button class="submit" type="submit" data-cursor><span>Отправить запрос</span></button>
+        </div>
+        <div class="form__ok"><b>Спасибо!</b><p style="color:var(--muted)">Консьерж свяжется с вами в течение 15 минут.</p></div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer__big">CHIMYON</div>
+  <div class="footer__cols">
+    <div><h4>Адрес</h4><p>Ташкентская область,<br>Бостанлыкский район,<br>посёлок Чимган</p></div>
+    <div><h4>Связь</h4><a href="tel:+998000000000">+998 00 000 00 00</a><a href="mailto:hello@chimyon.uz">hello@chimyon.uz</a></div>
+    <div><h4>Соцсети</h4><a href="#" data-cursor>Instagram</a><a href="#" data-cursor>Telegram</a></div>
+    <div><h4>Навигация</h4><a href="#residence">Резиденция</a><a href="#experience">Опыт</a><a href="#architecture">Архитектура</a></div>
+  </div>
+  <div class="footer__bottom"><span>© 2026 CHIMYON Residence</span><span>Концепт-сайт · фото: Unsplash</span></div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+(function(){
+  document.body.classList.remove('no-js');
+  const hasGSAP = typeof gsap !== 'undefined';
+  if(!hasGSAP){ document.body.classList.add('no-js'); document.getElementById('loader').remove(); return; }
+  gsap.registerPlugin(ScrollTrigger);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- smooth scroll ---------- */
+  let lenis = null;
+  if(typeof Lenis !== 'undefined' && !reduce){
+    lenis = new Lenis({duration:1.25, smoothWheel:true});
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(t => lenis.raf(t*1000));
+    gsap.ticker.lagSmoothing(0);
+    lenis.stop();
+  }
+  document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{
+    const id=a.getAttribute('href'); const el=id==='#top'?document.body:document.querySelector(id);
+    if(!el) return; e.preventDefault(); closeMenu();
+    lenis ? lenis.scrollTo(el,{offset:0,duration:1.6}) : el.scrollIntoView({behavior:'smooth'});
+  }));
+
+  /* ---------- menu ---------- */
+  const menu=document.getElementById('menu');
+  function closeMenu(){menu.classList.remove('is-open');document.body.classList.remove('menu-open')}
+  document.getElementById('burger').addEventListener('click',()=>{menu.classList.toggle('is-open');document.body.classList.toggle('menu-open')});
+
+  /* ---------- header hide on scroll ---------- */
+  const header=document.getElementById('header'); let lastY=0;
+  ScrollTrigger.create({onUpdate:self=>{
+    const y=self.scroll();
+    header.classList.toggle('is-hidden', y>lastY && y>200 && !menu.classList.contains('is-open'));
+    header.classList.toggle('is-solid', y>innerHeight*.6);
+    lastY=y;
+  }});
+
+  /* ---------- cursor ---------- */
+  const cur=document.getElementById('cursor');
+  const mouse={x:innerWidth/2,y:innerHeight/2,nx:.5,ny:.5};
+  addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;mouse.nx=e.clientX/innerWidth;mouse.ny=e.clientY/innerHeight;});
+  const cx=gsap.quickTo(cur,'x',{duration:.35,ease:'power3'}), cy=gsap.quickTo(cur,'y',{duration:.35,ease:'power3'});
+  addEventListener('mousemove',e=>{cx(e.clientX);cy(e.clientY)});
+  document.querySelectorAll('a,button,[data-cursor-big]').forEach(el=>{
+    el.addEventListener('mouseenter',()=>cur.classList.add('is-big'));
+    el.addEventListener('mouseleave',()=>cur.classList.remove('is-big'));
+  });
+
+  /* ---------- WebGL hero (distortion) ---------- */
+  const gl = initGL();
+
+  /* ---------- preloader ---------- */
+  const count=document.getElementById('count'), bar=document.getElementById('bar');
+  const loaderTl=gsap.timeline();
+  const o={v:0};
+  loaderTl.to('.loader__word span',{y:0,duration:1,stagger:.06,ease:'expo.out'})
+    .to(o,{v:100,duration:1.8,ease:'power2.inOut',onUpdate:()=>{count.textContent=Math.round(o.v);bar.style.width=o.v+'%'}},0)
+    .to('.loader__word span',{y:'-105%',duration:.7,stagger:.04,ease:'expo.in'},'+=.1')
+    .to('#loader',{clipPath:'inset(0 0 100% 0)',duration:1,ease:'expo.inOut'},'-=.2')
+    .add(()=>{document.getElementById('loader').remove(); lenis && lenis.start(); intro();},'-=.35');
+
+  function intro(){
+    const tl=gsap.timeline();
+    tl.to('.hero__title .line>span',{y:0,duration:1.4,stagger:.12,ease:'expo.out'})
+      .to('.hero__lead,.hero__sub',{opacity:1,y:0,duration:1.2,ease:'expo.out',stagger:.1},'-=1.1')
+      .to('#glass',{opacity:1,y:0,duration:1.2,ease:'expo.out'},'-=1')
+      .from('.header',{y:-30,opacity:0,duration:1,ease:'expo.out'},'-=1.2');
+    if(gl) gsap.fromTo(gl.u,{intro:1},{intro:0,duration:2.4,ease:'expo.out'});
+  }
+
+  /* hero scroll: distortion + text out */
+  ScrollTrigger.create({trigger:'#hero',start:'top top',end:'bottom bottom',scrub:true,onUpdate:s=>{ if(gl) gl.u.progress=s.progress; }});
+  gsap.to('.hero__title',{yPercent:-40,opacity:0,ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'45% top',scrub:true}});
+  gsap.to('.hero__lead,.hero__sub,#glass,.scroll-hint',{opacity:0,y:-40,ease:'none',scrollTrigger:{trigger:'#hero',start:'5% top',end:'35% top',scrub:true}});
+  gsap.to('.hero__fallback',{scale:1.2,filter:'grayscale(.8) brightness(.2) blur(6px)',ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom bottom',scrub:true}});
+
+  /* ---------- reveals ---------- */
+  gsap.utils.toArray('.rv').forEach(el=>{
+    if(el.closest('.hero')) return;
+    gsap.to(el,{opacity:1,y:0,duration:1.2,ease:'expo.out',scrollTrigger:{trigger:el,start:'top 88%'}});
+  });
+  gsap.utils.toArray('.line>span').forEach(el=>{
+    if(el.closest('.hero')||el.closest('.arrival')) return;
+    gsap.to(el,{y:0,duration:1.3,ease:'expo.out',scrollTrigger:{trigger:el.parentElement,start:'top 90%'}});
+  });
+  gsap.utils.toArray('.ph').forEach(ph=>{
+    ScrollTrigger.create({trigger:ph,start:'top 88%',once:true,onEnter:()=>ph.classList.add('is-in')});
+    const img=ph.querySelector('img');
+    const sp=parseFloat(ph.dataset.speed||0);
+    gsap.fromTo(img,{yPercent:-sp,scale:1.15},{yPercent:sp,scale:1.15,ease:'none',scrollTrigger:{trigger:ph,start:'top bottom',end:'bottom top',scrub:true}});
+  });
+
+  /* counters */
+  document.querySelectorAll('[data-count]').forEach(el=>{
+    const n=+el.dataset.count, c={v:0};
+    ScrollTrigger.create({trigger:el,start:'top 90%',once:true,onEnter:()=>gsap.to(c,{v:n,duration:2,ease:'power3.out',onUpdate:()=>el.textContent=Math.round(c.v)})});
+  });
+
+  /* scramble title */
+  document.querySelectorAll('[data-scramble]').forEach(el=>{
+    const final=el.textContent, chars='АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЭЮЯØ#%&*';
+    el.textContent='';
+    ScrollTrigger.create({trigger:el,start:'top 85%',once:true,onEnter:()=>{
+      const p={v:0};
+      gsap.to(p,{v:1,duration:1.6,ease:'power2.out',onUpdate:()=>{
+        const k=Math.floor(p.v*final.length);
+        let s=final.slice(0,k);
+        for(let i=k;i<final.length;i++) s+= final[i]===' '?' ':(Math.random()<p.v*1.2?chars[Math.random()*chars.length|0]:'');
+        el.textContent=s;
+      },onComplete:()=>el.textContent=final});
+    }});
+  });
+
+  /* arrival: clip-path expand */
+  const atl=gsap.timeline({scrollTrigger:{trigger:'#arrival',start:'top top',end:'bottom bottom',scrub:1}});
+  atl.to('#arrivalMedia',{clipPath:'inset(0% 0% 0% 0% round 0px)',ease:'power2.inOut',duration:1})
+     .to('#arrivalMedia img',{scale:1,ease:'power2.inOut',duration:1},0)
+     .to('.arrival__fade',{opacity:1,duration:.3},'>-0.15')
+     .fromTo('.arrival .line>span',{y:'110%'},{y:0,duration:.35,stagger:.06},'<')
+     .to({},{duration:.4});
+
+  /* booking bg parallax */
+  gsap.fromTo('#bookImg',{yPercent:-10},{yPercent:0,ease:'none',scrollTrigger:{trigger:'.book',start:'top bottom',end:'bottom top',scrub:true}});
+
+  /* form */
+  document.getElementById('form').addEventListener('submit',e=>{e.preventDefault();e.currentTarget.classList.add('is-sent')});
+  const today=new Date().toISOString().slice(0,10); document.getElementById('in').min=today; document.getElementById('out').min=today;
+
+  addEventListener('load',()=>ScrollTrigger.refresh());
+
+  /* ================= WebGL ================= */
+  function initGL(){
+    if(reduce) return null;
+    const canvas=document.getElementById('gl');
+    const g=canvas.getContext('webgl',{antialias:false,premultipliedAlpha:false});
+    if(!g) return null;
+    const vs=`attribute vec2 p;varying vec2 v;void main(){v=p*.5+.5;gl_Position=vec4(p,0.,1.);}`;
+    const fs=`precision highp float;
+      varying vec2 v;uniform sampler2D t;uniform vec2 res,img,mouse;uniform float time,progress,intro,hover;
+      vec3 hash3(vec2 p){vec3 q=vec3(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3)),dot(p,vec2(419.2,371.9)));return fract(sin(q)*43758.5453);}
+      float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
+        float a=hash3(i).x,b=hash3(i+vec2(1,0)).x,c=hash3(i+vec2(0,1)).x,d=hash3(i+vec2(1,1)).x;
+        return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);}
+      float fbm(vec2 p){float s=0.,a=.5;for(int i=0;i<5;i++){s+=a*noise(p);p*=2.02;a*=.5;}return s;}
+      vec2 cover(vec2 uv){float rs=res.x/res.y,ri=img.x/img.y;vec2 s=rs<ri?vec2(rs/ri,1.):vec2(1.,ri/rs);return (uv-.5)*s+.5;}
+      vec3 grade(vec3 c){float l=dot(c,vec3(.299,.587,.114));c=mix(vec3(l),c,.42);c=(c-.5)*1.12+.5;c*=vec3(1.04,.98,.9);return c*.66;}
+      void main(){
+        vec2 uv=v;uv.y=1.-uv.y;
+        float pr=smoothstep(0.,1.,progress);
+        float z=1.+.08*pr+.12*intro;
+        vec2 cuv=(uv-.5)/z+.5;
+        // mouse parallax
+        cuv+= (mouse-.5)*vec2(-.012,.008);
+        // liquid wave distortion driven by scroll
+        float band=uv.y + pr*1.4 - .7;
+        float n=fbm(vec2(uv.x*3.,uv.y*6.-time*.25));
+        float strength=(pr*.12+intro*.08)*(.4+n);
+        cuv.x+=sin(uv.y*28.+time*1.6+n*6.)*strength*.35;
+        cuv.y+=(n-.5)*strength;
+        // mouse ripple
+        vec2 md=uv-mouse;md.x*=res.x/res.y;float dm=length(md);
+        cuv+=normalize(md+1e-5)*sin(dm*40.-time*4.)*.004*smoothstep(.25,0.,dm)*hover;
+        vec2 tuv=cover(cuv);
+        float rgb=.004+pr*.02+intro*.012;
+        vec3 col;
+        col.r=texture2D(t,tuv+vec2(rgb,0.)).r;
+        col.g=texture2D(t,tuv).g;
+        col.b=texture2D(t,tuv-vec2(rgb,0.)).b;
+        col=grade(col);
+        // dissolve to black at the bottom as you scroll (liquid edge)
+        float edge=fbm(uv*vec2(4.,8.)+time*.1);
+        float dis=smoothstep(pr*1.25-.1,pr*1.25+.08,1.-uv.y+edge*.25);
+        col*=mix(1.,dis,step(.001,pr));
+        // streaks
+        col+=vec3(.9,.85,.75)*pow(n,6.)*pr*.6;
+        // vignette + grain
+        float vig=smoothstep(1.2,.3,length(uv-.5));col*=mix(.55,1.,vig);
+        col+=(hash3(uv*res+time).x-.5)*.045;
+        col*=1.-intro*.6;
+        gl_FragColor=vec4(col,1.);
+      }`;
+    function sh(type,src){const s=g.createShader(type);g.shaderSource(s,src);g.compileShader(s);if(!g.getShaderParameter(s,g.COMPILE_STATUS)){console.warn(g.getShaderInfoLog(s));return null}return s}
+    const prog=g.createProgram(), a=sh(g.VERTEX_SHADER,vs), b=sh(g.FRAGMENT_SHADER,fs);
+    if(!a||!b) return null;
+    g.attachShader(prog,a);g.attachShader(prog,b);g.linkProgram(prog);g.useProgram(prog);
+    const buf=g.createBuffer();g.bindBuffer(g.ARRAY_BUFFER,buf);
+    g.bufferData(g.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),g.STATIC_DRAW);
+    const loc=g.getAttribLocation(prog,'p');g.enableVertexAttribArray(loc);g.vertexAttribPointer(loc,2,g.FLOAT,false,0,0);
+    const U=n=>g.getUniformLocation(prog,n);
+    const L={res:U('res'),img:U('img'),mouse:U('mouse'),time:U('time'),progress:U('progress'),intro:U('intro'),hover:U('hover')};
+    const u={progress:0,intro:1,hover:0,mx:.5,my:.5};
+    const tex=g.createTexture();
+    const im=new Image();im.crossOrigin='anonymous';
+    im.src=document.querySelector('.hero__fallback').src;
+    let ready=false;
+    im.onload=()=>{
+      g.bindTexture(g.TEXTURE_2D,tex);
+      g.texParameteri(g.TEXTURE_2D,g.TEXTURE_WRAP_S,g.CLAMP_TO_EDGE);g.texParameteri(g.TEXTURE_2D,g.TEXTURE_WRAP_T,g.CLAMP_TO_EDGE);
+      g.texParameteri(g.TEXTURE_2D,g.TEXTURE_MIN_FILTER,g.LINEAR);g.texParameteri(g.TEXTURE_2D,g.TEXTURE_MAG_FILTER,g.LINEAR);
+      g.texImage2D(g.TEXTURE_2D,0,g.RGB,g.RGB,g.UNSIGNED_BYTE,im);
+      g.uniform2f(L.img,im.naturalWidth,im.naturalHeight);
+      ready=true;document.getElementById('hero').classList.add('gl-ready');
+    };
+    function resize(){const d=Math.min(devicePixelRatio,1.75);canvas.width=canvas.clientWidth*d;canvas.height=canvas.clientHeight*d;g.viewport(0,0,canvas.width,canvas.height);g.uniform2f(L.res,canvas.width,canvas.height)}
+    addEventListener('resize',resize);resize();
+    const hero=document.getElementById('hero');let visible=true;
+    new IntersectionObserver(e=>visible=e[0].isIntersecting).observe(hero);
+    gsap.ticker.add(time=>{
+      if(!ready||!visible) return;
+      u.mx+=(mouse.nx-u.mx)*.06;u.my+=(mouse.ny-u.my)*.06;
+      const tgt=matchMedia('(hover:hover)').matches?1:0;u.hover+=(tgt-u.hover)*.05;
+      g.uniform1f(L.time,time);g.uniform1f(L.progress,u.progress);g.uniform1f(L.intro,u.intro);g.uniform1f(L.hover,u.hover);
+      g.uniform2f(L.mouse,u.mx,u.my);
+      g.drawArrays(g.TRIANGLES,0,6);
+    });
+    return {u};
+  }
+})();
+</script>
+</body>
+</html>
